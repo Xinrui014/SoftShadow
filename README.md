@@ -1,2 +1,2 @@
 # SoftShadow
-Official Implimentation of SoftShadow: Leveraging Penumbra-Aware Soft Masks for Shadow Removal
+Official Implementation of SoftShadow: Leveraging Penumbra-Aware Soft Masks for Shadow Removal
