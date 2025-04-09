@@ -1,4 +1,4 @@
 # SoftShadow
-Official Implementation of SoftShadow: Leveraging Penumbra-Aware Soft Masks for Shadow Removal.  
+Official Implementation of SoftShadow: Leveraging Soft Masks for Penumbra-Aware Shadow Removal.  
 
 The code will be released soon!
