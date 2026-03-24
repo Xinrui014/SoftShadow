@@ -1,0 +1,12 @@
+conda install pytorch==1.13.0 torchvision==0.14.0 torchaudio==0.13.0 pytorch-cuda=11.6 -c pytorch -c nvidia
+
+pytorch_lightning<1.7.0
+lightning-bolts
+transformers==4.24.0
+diffusers==0.7.2
+timm
+ftfy
+hydra-core
+opencv-python
+h5py
+scipy

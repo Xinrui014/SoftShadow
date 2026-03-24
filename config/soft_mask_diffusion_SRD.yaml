@@ -1,0 +1,92 @@
+name: orig_shadowdiffusion_oursmask
+version: exp2.1_FDRmask_1e-5
+phase: test
+samshadow_ckpt_path: /home/xinrui/projects/ShadowDiffusion/experiments_lightning/FDRNet+diffusion/exp2.1_FDRmask_1e-5/epoch=499.ckpt
+save_result_path: /home/xinrui/projects/ShadowDiffusion/experiments_lightning/orig_shadowdiffusion_oursmask/sam_test_B
+resume: false
+resume_path: ./
+h_hat: false
+patch_tricky: false
+scheduler: false
+
+datasets:
+  train:
+    name: SRD_sam_train
+    mode: HR
+    dataroot: ./dataset/SRD_DHAN_mask_old/train
+    gt_mask_dir: /home/xinrui/projects/ShadowDiffusion/dataset/ISTD_adjusted_C/train/FDRNet_mask
+#    gt_mask_dir: ./dataset/ISTD_adjusted_C/train/train_B
+    batch_size: 8
+    val_data_len: 4
+    num_workers: 8
+    use_shuffle: true
+  test:
+    name: SRD_sam_val
+    mode: LRHR
+    dataroot: ./dataset/SRD_sam_mask_B/test
+    gt_mask_dir: /home/xinrui/projects/ShadowDiffusion/dataset/SRD_sam_mask_B/test/test_B
+#    gt_mask_dir: ./dataset/ISTD_adjusted_C/test/test_B
+    data_len: -1
+    batch_size: 1
+
+model:
+  which_model_G: sr3
+  unet:
+    in_channel: 7
+    out_channel: 3
+    inner_channel: 64
+    norm_groups: 16
+    channel_multiplier:
+      - 1
+      - 2
+      - 4
+      - 8
+    attn_res:
+      - 16
+    res_blocks: 2
+    dropout: 0
+  beta_schedule:
+    train:
+      schedule: linear
+      n_timestep: 1000
+      linear_start: 1e-4
+      linear_end: 0.02
+    val:
+      schedule: linear
+      n_timestep: 1000
+      linear_start: 1e-4
+      linear_end: 0.02
+  diffusion:
+    image_size: 512
+    channels: 3
+    conditional: true
+
+#sam:
+#  input_size: 1024
+#  loss: iou
+
+train:
+  gpu_ids: [0]
+  accumulate_grad_batches: 2
+  max_epochs: 500
+  every_n_epochs: 100
+  optimizer:
+    lr: 1e-5
+
+test:
+  gpu_ids: [2]
+
+warmup_epochs: 10
+
+ckpt_path:
+  'lora_sam':
+  'ddpm':  /home/xinrui/projects/ShadowDiffusion/experiments/official_test/checkpoint/SRD_dataset/I2130000_E12080 # two ckpts share same name
+#  'ddpm': /home/xinrui/projects/ShadowDiffusion/experiments/official_test/checkpoint/ISTD_plus_dataset/I1710000_E14251
+  'SAM':  "/home/xinrui/projects/ShadowDiffusion/experiments/official_test/SAM_ckpt/sam_vit_h_4b8939.pth"
+
+#bbox_path: "./dataset/ISTD_adjusted_C/train/bounding_boxes_ISTD.yaml"
+#test_bbox_path: "./dataset/ISTD_adjusted_C/test/bounding_boxes_ISTD.yaml"
+bbox_path: "./dataset/SRD_DHAN_mask_old/test/bounding_boxes_DHAN.yaml"
+test_bbox_path: "./dataset/SRD_DHAN_mask_old/test/bounding_boxes_DHAN.yaml"
+model_type: "vit_h"
+sam_rank: 8

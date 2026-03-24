@@ -1,0 +1,50 @@
+name: orig_sam
+version: sam_mask_with_bbox
+phase: test
+samshadow_ckpt_path: /home/xinrui/projects/ShadowDiffusion/experiments_lightning/ablation/mse/epoch=99.ckpt
+save_result_path: /home/xinrui/hdd1/xinrui/ShadowDiffusion/experiments_lightning/orig_sam/sam_mask_with_bbox/test_old
+
+
+grad_loss_weight: 0.1
+loss_type: mse+constrain
+constrain: noPenumbra
+patch_tricky: false
+
+datasets:
+  train:
+    name: SRD_sam_train
+    mode: HR
+    dataroot: ./dataset/ISTD_adjusted_C/train
+    gt_mask_dir: ./dataset/ISTD_adjusted_C/train/train_B
+    batch_size: 4
+    num_workers: 8
+    use_shuffle: true
+  test:
+    name: SRD_sam_val
+    mode: LRHR
+    dataroot: ./dataset/SRD_DHAN_mask_old/test
+    gt_mask_dir: ./dataset/SRD_DHAN_mask_old/test/test_B
+    batch_size: 1
+    data_len: -1
+
+train:
+  gpu_ids: [0,1]
+  accumulate_grad_batches: 1
+  max_epochs: 100
+  every_n_epochs: 50
+
+test:
+  gpu_ids: [3]
+
+
+ckpt_path:
+#  'sam_adapter': ./experiments/official_test/SAM_adapter_ckpt/model_epoch_best.pth
+  'ddpm': /home/xinrui/hdd1/xinrui/ShadowDiffusion/experiments/official_test/checkpoint/SRD_dataset/I2130000_E12080 # two ckpts share same name
+  'SAM': "/home/xinrui/hdd1/xinrui/ShadowDiffusion/experiments/official_test/SAM_ckpt/sam_vit_h_4b8939.pth"
+
+bbox_path: "./dataset/SRD_DHAN_mask_old/train/bounding_boxes_DHAN.yaml"
+test_bbox_path: "./dataset/SRD_DHAN_mask_old/test/bounding_boxes_DHAN.yaml"
+model_type: "vit_h"
+sam_rank: 8
+
+
